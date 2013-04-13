@@ -2,8 +2,8 @@ class minecraft::config
 
 (
   $level_name = hiera('minecraft::level_name', 'world'),
-  $motd       = hiera('minecraft::motd', undef),
-  $level_seed = hiera('minecraft::level_seed', undef)
+  $level_seed = hiera('minecraft::level_seed', undef),
+  $motd       = hiera('minecraft::motd', undef)
 )
 
 {
