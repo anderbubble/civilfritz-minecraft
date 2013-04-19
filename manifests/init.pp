@@ -10,7 +10,7 @@ class minecraft
   include minecraft::install
   class { 'minecraft::config':
     level_name => $level_name,
-    level_seed => $level-seed,
+    level_seed => $level_seed,
     motd       => $motd,
   }
   include minecraft::service

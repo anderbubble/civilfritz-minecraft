@@ -5,6 +5,7 @@ class minecraft::params
     'Debian':
     {
       $initscript = 'puppet:///modules/minecraft/init/debian.sh'
+      $reload_command = '/usr/sbin/service minecraft reload'
     }
 
     default:
