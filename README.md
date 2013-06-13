@@ -35,7 +35,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 Contact
 -------
 
-Jonathon Anderson <janderson@civilfritz.net>
+[Jonathon Anderson](janderson@civilfritz.net)
 
 
 Support
