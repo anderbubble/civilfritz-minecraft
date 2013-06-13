@@ -1,0 +1,8 @@
+name    'civilfritz-minecraft'
+version '0.0.1'
+source 'https://github.com/anderbubble/civilfritz-minecraft'
+author 'Jonathon Anderson'
+license 'Revised BSD License'
+summary 'install and configure a Minecraft server'
+description 'Install and configure a Minecraft server'
+project_page 'https://github.com/anderbubble/civilfritz-minecraft'

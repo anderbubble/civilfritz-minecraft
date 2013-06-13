@@ -1,5 +1,8 @@
 class minecraft::params
 {
+  $server_url = 'https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar'
+  $level_name = 'world'
+
   case $::osfamily
   {
     'Debian':
