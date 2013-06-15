@@ -40,47 +40,92 @@ then
 fi
 
 
+start_server ()
+{
+    start-stop-daemon --start --quiet \
+        --user minecraft --chuid minecraft \
+        --background --pidfile $PIDFILE --make-pidfile \
+        --chdir /var/lib/minecraft --startas /usr/bin/minecraft_server --name java \
+        -- -Xincgc $XMS $XMX $EXTRA_OPTS
+}
+
+
+stop_server ()
+{
+    local pid=$(cat ${PIDFILE})
+    local interval
+    echo '/stop' >/var/run/minecraft/minecraft_server
+    for interval in 1 2 5
+    do
+        check_server_status || return 0
+        log_progress_msg .
+        sleep $interval
+    done
+    return 1
+}
+
+
+kill_server ()
+{
+    start-stop-daemon --stop --retry 5 --quiet --user minecraft --pidfile $PIDFILE --name java
+}
+
+
+restart_server ()
+{
+    stop_server && start_server
+}
+
+
+reload_server ()
+{
+    echo '/reload' >/var/run/minecraft/minecraft_server
+}
+
+
+check_server_status ()
+{
+    pidofproc -p "$PIDFILE" >/dev/null
+}
+
+
 case "$1" in
-start)	log_daemon_msg "Starting Minecraft server"
-        start-stop-daemon --start --quiet \
-            --user minecraft --chuid minecraft \
-            --background --pidfile $PIDFILE --make-pidfile \
-            --chdir /var/lib/minecraft --startas /usr/bin/minecraft_server --name java \
-            -- -Xincgc $XMS $XMX $EXTRA_OPTS
-        log_action_end_msg $?
-	;;
-stop)	log_daemon_msg "Stopping Minecraft server"
-        echo '/stop' >/var/run/minecraft/minecraft_server
+    start)
+        log_daemon_msg "Starting Minecraft server"
+        start_server
         log_action_end_msg $?
         ;;
-kill)   log_daemon_msg "Killing Minecraft server"
-        start-stop-daemon --stop --quiet --user minecraft --pidfile $PIDFILE --name java
+    stop)
+        log_daemon_msg "Stopping Minecraft server"
+        stop_server
+        log_action_end_msg $?
+        ;;
+    kill)
+        log_daemon_msg "Killing Minecraft server"
+        kill_server
         log_action_end_msg 0
         ;;
-restart) log_daemon_msg "Restarting Minecraft server"
-        start-stop-daemon --stop --retry 5 --quiet --user minecraft --pidfile $PIDFILE --name java
-        start-stop-daemon --start --quiet \
-            --user minecraft --chuid minecraft \
-            --background --pidfile $PIDFILE--make-pidfile \
-            --chdir /var/lib/minecraft --startas /usr/bin/minecraft_server --name java \
-            -- -Xincgc $XMS $XMX $EXTRA_OPTS
+    restart)
+        log_daemon_msg "Restarting Minecraft server"
+        restart_server
         log_action_end_msg $?
         ;;
-reload) log_daemon_msg "Reloading configuration files for Minecraft server"
-        echo '/reload' >/var/run/minecraft/minecraft_server
+    reload)
+        log_daemon_msg "Reloading configuration files for Minecraft server"
+        reload_server
         log_action_end_msg 0
         ;;
-status)
-       log_action_begin_msg "Checking Minecraft server"
-       if pidofproc -p "$PIDFILE" >/dev/null; then
+    status)
+        log_action_begin_msg "Checking Minecraft server"
+        if check_server_status; then
             log_action_end_msg 0 "running"
             exit 0
-       else
-           log_action_end_msg 0 "not running"
-           exit 3
-       fi
-         ;;
-*)	log_action_msg "Usage: /etc/init.d/minecraft {start|stop|kill|status|restart|reload}"
+        else
+            log_action_end_msg 0 "not running"
+            exit 3
+        fi
+        ;;
+    *)	log_action_msg "Usage: /etc/init.d/minecraft {start|stop|kill|status|restart|reload}"
         exit 2
         ;;
 esac
