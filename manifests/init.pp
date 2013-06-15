@@ -20,6 +20,14 @@
 #   minecraft::service::reload.  Read from Hiera.  Defaults to
 #   running.
 #
+# [*memory_init*]
+#   The initial amount of memory to allocate to the server.  Read from
+#   Hiera.  Undefined by default.
+#
+# [*memory_max*]
+#   The maximum amount of memory to allocate to the server.  Read from
+#   Hiera.  Undefined by default.
+#
 # [*server_url*]
 #   The Internet URL from which minecraft_server.jar will be
 #   downloaded.  Read from Hiera.  Defaults to the value specified in
@@ -56,11 +64,13 @@
 class minecraft
 
 (
-  $ensure     = hiera('minecraft::ensure', 'running'),
-  $server_url = hiera('minecraft::server_url', $minecraft::params::server_url),
-  $level_name = hiera('minecraft::level_name', 'world'),
-  $level_seed = hiera('minecraft::level_seed', undef),
-  $motd       = hiera('minecraft::motd', undef)
+  $ensure      = hiera('minecraft::ensure', 'running'),
+  $memory_init = hiera('minecraft::memory_init', undef),
+  $memory_max  = hiera('minecraft::memory_max', undef),
+  $server_url  = hiera('minecraft::server_url', $minecraft::params::server_url),
+  $level_name  = hiera('minecraft::level_name', 'world'),
+  $level_seed  = hiera('minecraft::level_seed', undef),
+  $motd        = hiera('minecraft::motd', undef)
 )
 
 inherits minecraft::params
@@ -100,12 +110,19 @@ inherits minecraft::params
     require    => Class['minecraft::install'],
   }
 
+  class { 'minecraft::service::config':
+    memory_init => $memory_init,
+    memory_max  => $memory_max,
+  }
+    
+
   class { 'minecraft::service':
-    ensure  => $service_ensure,
-    require => [
-                Class['minecraft::install'],
-                Class['minecraft::config'],
-                ],
+    ensure    => $service_ensure,
+    require   => [
+                  Class['minecraft::install'],
+                  Class['minecraft::config'],
+                  ],
+    subscribe => Class['minecraft::service::config'],
   }
 
   if $reload

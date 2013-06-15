@@ -23,7 +23,21 @@ PIDFILE=/var/run/minecraft/minecraft_server.pid
 
 test -f /usr/bin/minecraft_server || exit 0
 
+if test -f /etc/default/minecraft; then
+    . /etc/default/minecraft
+fi
+
 . /lib/lsb/init-functions
+
+if [ ! -z "${MEMORY_INIT}" ]
+then
+    XMS="-Xms${MEMORY_INIT}"
+fi
+
+if [ ! -z "${MEMORY_MAX}" ]
+then
+    XMX="-Xmx${MEMORY_MAX}"
+fi
 
 
 case "$1" in
@@ -32,7 +46,7 @@ start)	log_daemon_msg "Starting Minecraft server"
             --user minecraft --chuid minecraft \
             --background --pidfile $PIDFILE --make-pidfile \
             --chdir /var/lib/minecraft --startas /usr/bin/minecraft_server --name java \
-            -- -Xincgc -Xms32M -Xmx384M $EXTRA_OPTS
+            -- -Xincgc $XMS $XMX $EXTRA_OPTS
         log_action_end_msg $?
 	;;
 stop)	log_daemon_msg "Stopping Minecraft server"
@@ -49,7 +63,7 @@ restart) log_daemon_msg "Restarting Minecraft server"
             --user minecraft --chuid minecraft \
             --background --pidfile $PIDFILE--make-pidfile \
             --chdir /var/lib/minecraft --startas /usr/bin/minecraft_server --name java \
-            -- -Xincgc -Xms32M -Xmx384M $EXTRA_OPTS
+            -- -Xincgc $XMS $XMX $EXTRA_OPTS
         log_action_end_msg $?
         ;;
 reload) log_daemon_msg "Reloading configuration files for Minecraft server"

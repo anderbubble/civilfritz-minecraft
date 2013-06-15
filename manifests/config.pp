@@ -8,8 +8,8 @@
 # The minecraft::config class takes three parameters.
 #
 # [*ensure*]
-#   Valid values are installed / present / true and uninstalled /
-#   absent / false.  Read from Hiera.  Defaults to present.
+#   Valid values are present / true and absent / false.  Read from
+#   Hiera.  Defaults to present.
 #
 # [*level_name*]
 #   The name of the world generated or referenced by the running
@@ -42,10 +42,10 @@
 class minecraft::config
 
 (
-  $ensure     = hiera('minecraft::config::ensure', 'present'),
-  $level_name = hiera('minecraft::config::level_name', $minecraft::params::level_name),
-  $level_seed = hiera('minecraft::config::level_seed', undef),
-  $motd       = hiera('minecraft::config::motd', undef)
+  $ensure      = hiera('minecraft::config::ensure', 'present'),
+  $level_name  = hiera('minecraft::config::level_name', $minecraft::params::level_name),
+  $level_seed  = hiera('minecraft::config::level_seed', undef),
+  $motd        = hiera('minecraft::config::motd', undef)
 )
 
 inherits minecraft::params
