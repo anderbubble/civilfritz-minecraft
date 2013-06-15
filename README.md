@@ -1,8 +1,10 @@
 # A Puppet module for minecraft servers
 
-`civilfritz-minecraft` installs and manages a Minecraft server, and
+`civilfritz-minecraft` installs and manages a [Minecraft][] server, and
 bundles just enough scripting to make it behave like a regular system
 service.
+
+[Minecraft]: https://minecraft.net
 
 ## Examples
 
@@ -10,7 +12,7 @@ As usual, you are just a single include away from a working service.
 
     include minecraft
 
-Of course, you can also configure your server, using either hiera or
+Of course, you can also configure your server, using either [hiera] [1] or
 class parameters.
 
     class { 'minecraft':
@@ -18,6 +20,8 @@ class parameters.
         level_seed => 'civilfritz',
         motd       => 'civilfritz Minecraft server',
     }
+
+[1]: http://docs.puppetlabs.com/hiera/1/index.html
 
 ## Server interaction
 
@@ -28,11 +32,11 @@ Minecraft server process to a named pipe.  The Minecraft server is run
 directly by `init`, and can be stopped, started, and reloaded using
 the system service control mechanism.
 
-    invoke-rc.d minecraft restart
+    # invoke-rc.d minecraft restart
 
 Issue arbitrary commands to the server by writing into the named pipe.
 
-    echo "/say Hello, world!" >/var/run/minecraft/minecraft_server
+    $ echo "/say Hello, world!" >/var/run/minecraft/minecraft_server
 
 ## Operating system support
 
@@ -52,9 +56,9 @@ Red Hat support should follow, but will likely require a separate
 
 ## Support
 
-Please log tickets and issues at
-[GitHub](https://github.com/anderbubble/civilfritz-minecraft).
+Please log tickets and issues at [GitHub] [2].
 
+[2]: https://github.com/anderbubble/civilfritz-minecraft
 
 ## License
 
