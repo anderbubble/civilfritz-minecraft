@@ -58,4 +58,22 @@ inherits minecraft::params
     group   => 'minecraft',
     mode    => '0644',
   }
+
+  file { '/var/lib/minecraft/white-list.txt':
+    owner => 'minecraft',
+    group => 'minecraft',
+    mode  => '0644',
+  }
+
+  file { '/var/lib/minecraft/banned-ips.txt':
+    owner => 'minecraft',
+    group => 'minecraft',
+    mode  => '0644',
+  }
+
+  file { '/var/lib/minecraft/banned-players.txt':
+    owner => 'minecraft',
+    group => 'minecraft',
+    mode  => '0644',
+  }
 }
