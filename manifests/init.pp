@@ -65,6 +65,10 @@
 #   Changes the port the server is hosting (listening) on. Defaults to
 #   '25565'.
 #
+# [*max_players*]
+#   The maximum number of players that can play on the server at the
+#   same time. Defaults to 20.
+#
 # === Examples
 #
 #  class { 'minecraft':
@@ -95,7 +99,8 @@ class minecraft
   $difficulty       = hiera('minecraft::difficulty', $minecraft::params::difficulty),
   $public           = hiera('minecraft::public', undef),
   $spawn_protection = hiera('minecraft::spawn_protection', undef),
-  $server_port      = hiera('minecraft::server_port', $minecraft::params::server_port)
+  $server_port      = hiera('minecraft::server_port', $minecraft::params::server_port),
+  $max_players      = hiera('minecraft::max_players', $minecraft::params::max_players)
 )
 
 inherits minecraft::params
@@ -137,6 +142,7 @@ inherits minecraft::params
     public           => $public,
     spawn_protection => $spawn_protection,
     server_port      => $server_port,
+    max_players      => $max_players,
     require          => Class['minecraft::install'],
   }
 

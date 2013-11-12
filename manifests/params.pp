@@ -6,6 +6,7 @@ class minecraft::params
   $difficulty = '1'
   $server_port = '25565'
   $motd = 'A Minecraft Server'
+  $max_players = '20'
 
   case $::osfamily
   {
