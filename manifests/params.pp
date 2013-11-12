@@ -3,7 +3,8 @@ class minecraft::params
   $server_url = 'https://s3.amazonaws.com/MinecraftDownload/launcher/minecraft_server.jar'
   $level_name = 'world'
   $white_list = false
-  $difficulty = 1
+  $difficulty = '1'
+  $server_port = '25565'
   $motd = 'A Minecraft Server'
 
   case $::osfamily

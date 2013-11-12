@@ -61,6 +61,10 @@
 #   Enables a whitelist on the server. Valid values are true and
 #   false. Defaults to false.
 #
+# [*server_port*]
+#   Changes the port the server is hosting (listening) on. Defaults to
+#   '25565'.
+#
 # === Examples
 #
 #  class { 'minecraft':
@@ -90,7 +94,8 @@ class minecraft
   $white_list       = hiera('minecraft::white_list', $minecraft::params::white_list),
   $difficulty       = hiera('minecraft::difficulty', $minecraft::params::difficulty),
   $public           = hiera('minecraft::public', undef),
-  $spawn_protection = hiera('minecraft::spawn_protection', undef)
+  $spawn_protection = hiera('minecraft::spawn_protection', undef),
+  $server_port      = hiera('minecraft::server_port', $minecraft::params::server_port)
 )
 
 inherits minecraft::params
@@ -131,6 +136,7 @@ inherits minecraft::params
     difficulty       => $difficulty,
     public           => $public,
     spawn_protection => $spawn_protection,
+    server_port      => $server_port,
     require          => Class['minecraft::install'],
   }
 
