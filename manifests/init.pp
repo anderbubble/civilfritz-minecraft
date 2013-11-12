@@ -14,36 +14,52 @@
 #
 # [*ensure*]
 #   Valid values are absent / uninstalled / false, present / installed
-#   / stopped, and running / true.  Controls the presence of installed
+#   / stopped, and running / true. Controls the presence of installed
 #   files via minecraft::install and minecraft::config, and the status
 #   of the server daemon via minecraft::service and
-#   minecraft::service::reload.  Read from Hiera.  Defaults to
+#   minecraft::service::reload. Read from Hiera. Defaults to
 #   running.
 #
 # [*memory_init*]
-#   The initial amount of memory to allocate to the server.  Read from
-#   Hiera.  Undefined by default.
+#   The initial amount of memory to allocate to the server. Read from
+#   Hiera. Undefined by default.
 #
 # [*memory_max*]
-#   The maximum amount of memory to allocate to the server.  Read from
-#   Hiera.  Undefined by default.
+#   The maximum amount of memory to allocate to the server. Read from
+#   Hiera. Undefined by default.
 #
 # [*server_url*]
 #   The Internet URL from which minecraft_server.jar will be
-#   downloaded.  Read from Hiera.  Defaults to the value specified in
+#   downloaded. Read from Hiera. Defaults to the value specified in
 #   minecraft::params.
 #
 # [*level_name*]
 #   The name of the world generated or referenced by the running
-#   Minecraft server.  Read from Hiera.  Defaults to 'world'.
+#   Minecraft server. Read from Hiera. Defaults to 'world'.
 #
 # [*level_seed*]
-#   The random number seed used to generate a world.  Read from Hiera.
+#   The random number seed used to generate a world. Read from Hiera.
 #   Undefined by default.
 #
 # [*motd*]
-#   The message displayed for this server in the server browser.  Read
-#   from Hiera.  Undefined by default.
+#   The message displayed for this server in the server browser. Read
+#   from Hiera. Defaults to 'A Minecraft Server'.
+#
+# [*spawn_protection*]
+#   The radius of the spawn protection as the number of blocks away
+#   from the origin. Undefined by default.
+#
+# [*public*]
+#   Whether the server should be displayed in the server list, or
+#   not. Valid values are true and false. Undefined by default.
+#
+# [*difficulty*]
+#   Defines the difficulty of the server. Valid values are 0, 1, 2,
+#   3. 1 by default.
+#
+# [*white_list*]
+#   Enables a whitelist on the server. Valid values are true and
+#   false. Defaults to false.
 #
 # === Examples
 #
@@ -64,13 +80,17 @@
 class minecraft
 
 (
-  $ensure      = hiera('minecraft::ensure', 'running'),
-  $memory_init = hiera('minecraft::memory_init', undef),
-  $memory_max  = hiera('minecraft::memory_max', undef),
-  $server_url  = hiera('minecraft::server_url', $minecraft::params::server_url),
-  $level_name  = hiera('minecraft::level_name', 'world'),
-  $level_seed  = hiera('minecraft::level_seed', undef),
-  $motd        = hiera('minecraft::motd', undef)
+  $ensure           = hiera('minecraft::ensure', 'running'),
+  $memory_init      = hiera('minecraft::memory_init', undef),
+  $memory_max       = hiera('minecraft::memory_max', undef),
+  $server_url       = hiera('minecraft::server_url', $minecraft::params::server_url),
+  $level_name       = hiera('minecraft::level_name', 'world'),
+  $level_seed       = hiera('minecraft::level_seed', undef),
+  $motd             = hiera('minecraft::motd', $minecraft::params::motd),
+  $white_list       = hiera('minecraft::white_list', $minecraft::params::white_list),
+  $difficulty       = hiera('minecraft::difficulty', $minecraft::params::difficulty),
+  $public           = hiera('minecraft::public', undef),
+  $spawn_protection = hiera('minecraft::spawn_protection', undef)
 )
 
 inherits minecraft::params
@@ -104,10 +124,14 @@ inherits minecraft::params
   }
 
   class { 'minecraft::config':
-    level_name => $level_name,
-    level_seed => $level_seed,
-    motd       => $motd,
-    require    => Class['minecraft::install'],
+    level_name       => $level_name,
+    level_seed       => $level_seed,
+    motd             => $motd,
+    white_list       => $white_list,
+    difficulty       => $difficulty,
+    public           => $public,
+    spawn_protection => $spawn_protection,
+    require          => Class['minecraft::install'],
   }
 
   class { 'minecraft::service::config':

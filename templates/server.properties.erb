@@ -1,34 +1,39 @@
 #Minecraft server properties
-
+#Managed by Puppet
 generator-settings=
+op-permission-level=4
 allow-nether=true
 level-name=<%= @level_name %>
 enable-query=false
 allow-flight=false
+announce-player-achievements=true
 server-port=25565
 level-type=DEFAULT
 enable-rcon=false
-<% if not @level_seed.nil? -%>
 level-seed=<%= @level_seed %>
-<% end -%>
+force-gamemode=false
 server-ip=
 max-build-height=256
 spawn-npcs=true
-white-list=true
+white-list=<%= @white_list %>
 spawn-animals=true
-snooper-enabled=true
 hardcore=false
-texture-pack=
+snooper-enabled=true
 online-mode=true
+resource-pack=
 pvp=true
-difficulty=2
+difficulty=<%= @difficulty %>
+enable-command-block=false
 gamemode=0
+player-idle-timeout=0
 max-players=20
-public=false
 spawn-monsters=true
 generate-structures=true
 view-distance=10
-spawn-protection=16
-<% if not @motd.nil? -%>
 motd=<%= @motd %>
+<% if not @public.nil? -%>
+public=<%= @public %>
+<% end -%>
+<% if not @spawn_protection.nil? -%>
+spawn-protection=<%= @spawn_protection %>
 <% end -%>

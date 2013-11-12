@@ -13,15 +13,31 @@
 #
 # [*level_name*]
 #   The name of the world generated or referenced by the running
-#   Minecraft server.  Read from Hiera.  Defaults to 'world'.
+#   Minecraft server. Read from Hiera. Defaults to 'world'.
 #
 # [*level_seed*]
-#   The random number seed used to generate a world.  Read from Hiera.
+#   The random number seed used to generate a world. Read from Hiera.
 #   Undefined by default.
 #
 # [*motd*]
-#   The message displayed for this server in the server browser.  Read
-#   from Hiera.  Undefined by default.
+#   The message displayed for this server in the server browser. Read
+#   from Hiera. Defaults to 'A Minecraft Server'.
+#
+# [*spawn_protection*]
+#   The radius of the spawn protection as the number of blocks away
+#   from the origin. Undefined by default.
+#
+# [*public*]
+#   Whether the server should be displayed in the server list, or
+#   not. Valid values are true and false. Undefined by default.
+#
+# [*difficulty*]
+#   Defines the difficulty of the server. Valid values are 0, 1, 2,
+#   3. 1 by default.
+#
+# [*white_list*]
+#   Enables a whitelist on the server. Valid values are true and
+#   false. Defaults to false.
 #
 # === Examples
 #
@@ -42,10 +58,14 @@
 class minecraft::config
 
 (
-  $ensure      = hiera('minecraft::config::ensure', 'present'),
-  $level_name  = hiera('minecraft::config::level_name', $minecraft::params::level_name),
-  $level_seed  = hiera('minecraft::config::level_seed', undef),
-  $motd        = hiera('minecraft::config::motd', undef)
+  $ensure           = hiera('minecraft::config::ensure', 'present'),
+  $level_name       = hiera('minecraft::config::level_name', $minecraft::params::level_name),
+  $level_seed       = hiera('minecraft::config::level_seed', undef),
+  $motd             = hiera('minecraft::config::motd', $minecraft::params::motd),
+  $white_list       = hiera('minecraft::config::white_list', $minecraft::params::white_list),
+  $difficulty       = hiera('minecraft::config::difficulty', $minecraft::params::difficulty),
+  $public           = hiera('minecraft::config::public', undef),
+  $spawn_protection = hiera('minecraft::config::spawn_protection', undef)
 )
 
 inherits minecraft::params
@@ -57,6 +77,12 @@ inherits minecraft::params
     owner   => 'minecraft',
     group   => 'minecraft',
     mode    => '0644',
+  }
+
+  file { '/var/lib/minecraft/ops.txt':
+    owner => 'minecraft',
+    group => 'minecraft',
+    mode  => '0644',
   }
 
   file { '/var/lib/minecraft/white-list.txt':
